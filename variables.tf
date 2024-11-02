@@ -1,6 +1,6 @@
-variable "vpc_cidr" {
-  type = string
-}
+# variable "vpc_cidr" {
+#   type = string
+# }
 
 variable "region" {
   type    = string
@@ -39,32 +39,32 @@ variable "vpc_params" {
   })
 }
 
-variable "eks_params" {
-  description = "EKS cluster itslef parameters"
-  type = object({
-    cluster_endpoint_public_access = bool
-    cluster_enabled_log_types      = list(string)
-  })
-}
+# variable "eks_params" {
+#   description = "EKS cluster itslef parameters"
+#   type = object({
+#     cluster_endpoint_public_access = bool
+#     cluster_enabled_log_types      = list(string)
+#   })
+# }
 
-variable "eks_managed_node_group_params" {
-  description = "EKS Managed NodeGroups setting, one item in the map() per each dedicated NodeGroups"
-  type = map(object({
-    min_size                   = number
-    max_size                   = number
-    desired_size               = number
-    instance_types             = list(string)
-    capacity_type              = string
-    taints                     = set(map(string))
-    max_unavailable_percentage = number
-  }))
-}
+# variable "eks_managed_node_group_params" {
+#   description = "EKS Managed NodeGroups setting, one item in the map() per each dedicated NodeGroups"
+#   type = map(object({
+#     min_size                   = number
+#     max_size                   = number
+#     desired_size               = number
+#     instance_types             = list(string)
+#     capacity_type              = string
+#     taints                     = set(map(string))
+#     max_unavailable_percentage = number
+#   }))
+# }
 
-variable "eks_aws_auth_users" {
-  description = "IAM Users to be added to the aws-auth ConfigMap, one item in the set() per each IAM User"
-  type = set(object({
-    userarn  = string
-    username = string
-    groups   = list(string)
-  }))
-}
+# variable "eks_aws_auth_users" {
+#   description = "IAM Users to be added to the aws-auth ConfigMap, one item in the set() per each IAM User"
+#   type = set(object({
+#     userarn  = string
+#     username = string
+#     groups   = list(string)
+#   }))
+# }

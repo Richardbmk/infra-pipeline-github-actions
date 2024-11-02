@@ -1,0 +1,35 @@
+name: Test Terraform code
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**.tf'
+      - '*.tfvars'
+      - '*.tfstate'
+      - '*.tfstate.backup'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  test-terraform:
+    environment: 'dev'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 'Setup: AWS Login and Terraform init'
+        uses: ./.github/actions/terraform-init
+        with:
+          environment: ${{ vars.ENVIRONMENT }}
+          region: ${{ vars.AWS_REGION }}
+          iam-role: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/tf-admin
+
+      - name: 'Test: check and validate'
+        uses: ./.github/actions/terraform-test
+        with:
+          environment: ${{ vars.ENVIRONMENT }}
+          region: ${{ vars.AWS_REGION }}
+          iam-role: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/tf-admin

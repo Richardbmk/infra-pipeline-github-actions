@@ -1,0 +1,37 @@
+name: 'Test and verify Terraform code'
+description: 'Combining all test actions into one'
+
+inputs:
+  environment:
+    required: true
+    description: deployment environment
+  region:
+    required: true
+    description: deployment region
+  iam-role:
+    required: true
+    description: role for the deployment
+
+runs:
+  using: 'composite'
+
+  steps:
+    - uses: hashicorp/setup-terraform@v3
+
+    - name: Terraform Validate
+      run: terraform validate
+      shell: bash
+
+    - name: Terraform fmt
+      run: terraform fmt -check
+      shell: bash
+      continue-on-error: false
+
+    - name: Setup TFLint
+      uses: terraform-linters/setup-tflint@v3
+      with:
+        tflint_version: v0.53.0
+
+    - name: Terraform lint
+      run: tflint -f compact
+      shell: bash

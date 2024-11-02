@@ -1,14 +1,21 @@
 name: Test Terraform changes
 
-defaults:
-  run:
-    working-directory: terraform
+# defaults:
+#   run:
+#     working-directory: terraform
 
 on:
   workflow_dispatch:
   push:
     paths:
-      - terraform/**
+      - '**.tf' # Watches for changes to any .tf file in the root
+      - '*.tfvars' # Watches for changes to any .tfvars file in the root
+      - '*.tfstate' # Optional: watches for any state file changes if tracked in the repo
+      - '*.tfstate.backup'
+  # workflow_dispatch:
+  # push:
+  #   paths:
+  #     - terraform/**
 
 env:
   ENVIRONMENT: 'dev'
@@ -30,12 +37,10 @@ jobs:
         continue-on-error: true
 
       - name: 'Setup: Configure AWS credentials'
-        # this step adds `env.AWS_*` variables
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ vars.TF_AWS_ROLE }}
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/tf-admin
           role-session-name: github-actions-terraform
-          role-duration-seconds: 7200
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init
@@ -43,3 +48,11 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
+
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v3
+        with:
+          tflint_version: v0.53.0
+
+      - name: Terraform lint
+        run: tflint -f compact
