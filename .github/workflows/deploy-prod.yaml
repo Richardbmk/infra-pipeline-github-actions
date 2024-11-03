@@ -50,8 +50,8 @@ jobs:
           iam-role: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/tf-admin
 
       # WE ARE ADDING A DESTROY STEP BECAUSE IS A SANDBOX PIPELINE - YOU NORMALLY DON'T DESTROY PROD ENV
-      - name: 'Deploy: to ${{ vars.ENVIRONMENT }}'
-        uses: ./.github/actions/terraform-apply
+      - name: 'Destroy: to ${{ vars.ENVIRONMENT }}'
+        uses: ./.github/actions/terraform-destroy
         if: ${{ github.ref_type == 'tag' && github.event.inputs.confirm-destroy == 'true' }}
         with:
           environment: ${{ vars.ENVIRONMENT }}
