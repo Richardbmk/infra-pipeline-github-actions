@@ -6,6 +6,11 @@ concurrency:
 
 on:
   workflow_dispatch:
+    inputs:
+      confirm-destroy:
+        type: boolean
+        required: true
+        description: 'Set to confirm destroy to the DEVELOPMENT environment'
   push:
     paths:
       - '**.tf'
@@ -40,6 +45,15 @@ jobs:
 
       - name: 'Deploy: to ${{ vars.ENVIRONMENT }}'
         uses: ./.github/actions/terraform-apply
+        if: github.event.inputs.confirm-destroy != 'true'
+        with:
+          environment: ${{ vars.ENVIRONMENT }}
+          region: ${{ vars.AWS_REGION }}
+          iam-role: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/tf-admin
+
+      - name: 'Destroy: to ${{ vars.ENVIRONMENT }}'
+        uses: ./.github/actions/terraform-destroy
+        if: github.event.inputs.confirm-destroy == 'true'
         with:
           environment: ${{ vars.ENVIRONMENT }}
           region: ${{ vars.AWS_REGION }}
