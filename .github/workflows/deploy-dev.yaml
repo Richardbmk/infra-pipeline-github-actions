@@ -10,7 +10,7 @@ on:
       confirm-destroy:
         type: boolean
         required: true
-        description: 'Set to confirm deploy to the PRODUCTION environment'
+        description: 'Set to confirm destroy to the DEVELOPMENT environment'
   push:
     paths:
       - '**.tf'
@@ -45,6 +45,7 @@ jobs:
 
       - name: 'Deploy: to ${{ vars.ENVIRONMENT }}'
         uses: ./.github/actions/terraform-apply
+        if: github.event.inputs.confirm-destroy != 'true'
         with:
           environment: ${{ vars.ENVIRONMENT }}
           region: ${{ vars.AWS_REGION }}
