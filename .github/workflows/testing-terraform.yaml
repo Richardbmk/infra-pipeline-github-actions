@@ -37,7 +37,7 @@ jobs:
         continue-on-error: true
 
       - name: 'Setup: Configure AWS credentials'
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/tf-admin
           role-session-name: github-actions-terraform
