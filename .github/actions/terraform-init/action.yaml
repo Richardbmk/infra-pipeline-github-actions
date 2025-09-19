@@ -19,7 +19,7 @@ runs:
     - uses: hashicorp/setup-terraform@v3
 
     - name: 'Setup: Configure AWS credentials'
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@v5
       with:
         role-to-assume: ${{ inputs.iam-role }}
         role-session-name: github-actions-terraform
